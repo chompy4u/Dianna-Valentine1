@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dianna 💖</title>
+  <style>
+    body { margin:0; font-family:'Segoe UI',sans-serif; background:black; color:white; height:100vh; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+    .lockscreen { position:relative; width:100%; max-width:390px; height:100vh; background:url('photo1.jpg') center/cover no-repeat; }
+    .overlay { position:absolute; inset:0; background:rgba(0,0,0,0.45); padding:30px 20px; display:flex; flex-direction:column; justify-content:space-between; text-align:center; }
+    .owner { font-size:0.9rem; opacity:0.7; } .time { font-size:3rem; font-weight:600; } .date { font-size:1.05rem; opacity:0.85; }
+    .notification { background:rgba(255,255,255,0.18); border-radius:16px; padding:16px; margin-top:20px; cursor:pointer; }
+    .faceid { margin-top:15px; font-size:2rem; animation:pulse 1.5s infinite; }
+    .game { display:none; flex-direction:column; align-items:center; }
+    .countdown { font-size:0.9rem; opacity:0.85; margin-top:6px; }
+    .play-area { position:relative; width:100%; height:220px; background:rgba(255,255,255,0.15); border-radius:16px; overflow:hidden; margin-top:10px; }
+    .heart { position:absolute; font-size:2rem; cursor:pointer; }
+    .timer { margin-top:8px; font-weight:bold; }
+    button { margin:10px; padding:14px 22px; font-size:1.05rem; border:none; border-radius:14px; cursor:pointer; }
+    .yes { background:#ff3b6f; color:white; } .no { background:gray; color:white; position:absolute; }
+    @keyframes fall { to { transform:translateY(100vh); opacity:0; } }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes pulse { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
+    .bg-heart { position:fixed; color:rgba(255,105,180,0.25); font-size:1.2rem; animation:float 10s linear infinite; }
+    @keyframes float { from { transform:translateY(100vh); } to { transform:translateY(-10vh); } }
+  </style>
+</head>
+<body>
+<div class="lockscreen" id="lock">
+  <div class="overlay">
+    <div>
+      <div class="owner">Dianna’s iPhone 💖</div>
+      <div class="time" id="clock"></div>
+      <div class="date">Saturday, February 14, 2026</div>
+      <div class="countdown" id="countdown"></div>
+      <div class="faceid">😊</div>
+      <div class="notification" onclick="unlock()">💌 Message from someone who loves you</div>
+    </div>
+    <div class="game" id="game">
+      <p>Catch 10 hearts before time runs out 💕</p>
+      <div class="play-area" id="play"></div>
+      <div class="timer" id="status">Time: 20 | Hearts: 0/10</div>
+    </div>
+  </div>
+</div>
+<script>
+for (let i=0;i<15;i++){const h=document.createElement('div');h.className='bg-heart';h.textContent='💗';h.style.left=Math.random()*window.innerWidth+'px';h.style.animationDuration=8+Math.random()*6+'s';document.body.appendChild(h);}
+const clock=document.getElementById('clock');setInterval(()=>{const d=new Date();clock.textContent=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});},1000);
+const countdown=document.getElementById('countdown');const target=new Date('February 14, 2026');setInterval(()=>{const now=new Date();const diff=target-now;if(diff>0){const days=Math.floor(diff/(1000*60*60*24));countdown.textContent=`${days} days until our Valentine 💝`;}},1000);
+const lock=document.getElementById('lock');const game=document.getElementById('game');const play=document.getElementById('play');const status=document.getElementById('status');let hearts=0;let time=20;let interval;
+function unlock(){game.style.display='flex';startTimer();spawnLoop();}
+function startTimer(){interval=setInterval(()=>{time--;status.textContent=`Time: ${time} | Hearts: ${hearts}/10`;if(time<=0)endGame(false);},1000);}
+function spawnLoop(){const spawner=setInterval(()=>{if(hearts>=10){clearInterval(spawner);return;}spawnHeart();},600);}
+function spawnHeart(){const h=document.createElement('div');h.className='heart';h.textContent='💖';let x=Math.random()*(play.clientWidth-30);let y=Math.random()*(play.clientHeight-30);h.style.left=x+'px';h.style.top=y+'px';h.onclick=()=>{hearts++;h.remove();status.textContent=`Time: ${time} | Hearts: ${hearts}/10`;if(hearts>=10)endGame(true);};play.appendChild(h);setTimeout(()=>h.remove(),2500);}
+function endGame(win){clearInterval(interval);if(win)showQuestion();else{time=20;hearts=0;status.textContent='Try again 💔';}}
+function showQuestion(){lock.style.background="url('photo2.jpg') center/cover no-repeat";game.innerHTML=`<h2>Dianna 💝</h2><p><strong>Will you be my Valentines 💝</strong></p><iframe src="https://www.youtube.com/embed/450p7goxZqg?autoplay=1" width="100%" height="90" allow="autoplay"></iframe><button class="yes" onclick="yes()">YES 💖</button><button class="no" id="no">No 🙃</button>`;const no=document.getElementById('no');no.onmouseover=()=>{no.style.left=Math.random()*220+'px';no.style.top=Math.random()*200+'px';};}
+window.yes=function(){game.innerHTML=`<h2>🥰 It’s a Date 🥰</h2><p><strong>February 14, 2026 💐</strong></p><p>📍 Secret Location</p><p>I can’t wait to celebrate love with you, Dianna.</p><p style="opacity:0.8; font-size:0.9rem;">📸 Screenshot this moment 💖</p>`;for(let i=0;i<50;i++){const confetti=document.createElement('div');confetti.textContent=Math.random()>0.5?'💗':'💖';confetti.style.position='fixed';confetti.style.left=Math.random()*window.innerWidth+'px';confetti.style.top='-30px';confetti.style.fontSize=Math.random()*1.5+1.2+'rem';confetti.style.animation=`fall ${3+Math.random()}s linear forwards, spin 2s linear infinite`;document.body.appendChild(confetti);setTimeout(()=>confetti.remove(),4000);}if(navigator.vibrate)navigator.vibrate([200,100,200]);const audio=new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');audio.volume=0.4;audio.play();}
+</script>
+</body>
+</html>
